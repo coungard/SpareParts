@@ -1,7 +1,8 @@
 package com.coungard.client.email;
 
 import javax.mail.*;
-import java.io.IOException;
+import javax.mail.internet.MimeUtility;
+import java.io.*;
 import java.util.Properties;
 
 public class ReadEmail {
@@ -39,18 +40,35 @@ public class ReadEmail {
             // Вывод содержимого в консоль
             for (int i = 0; i < mp.getCount(); i++) {
                 BodyPart bp = mp.getBodyPart(i);
-                if (bp.getFileName() == null)
+                if (bp.getFileName() == null) {
                     System.out.println("    " + i + ". сообщение : '" + bp.getContent() + "'");
-                else
+                } else {
                     System.out.println("    " + i + ". файл : '" + bp.getFileName() + "'");
+                    Part part = mp.getBodyPart(i);
+                    if ((part.getDisposition() != null) && (part.getDisposition().equals(Part.ATTACHMENT))) {
+                        saveFile(MimeUtility.decodeText(part.getFileName()), part.getInputStream());
+                    }
+                }
             }
         } catch (MessagingException | IOException ex) {
             System.err.println(ex.getMessage());
         }
     }
 
-    public static void main(String[] args) {
-        new ReadEmail();
-        System.exit(0);
+    private static String saveFile(String filename, InputStream input) {
+        String path = "attachments\\"+filename;
+        try {
+            byte[] attachment = new byte[input.available()];
+            input.read(attachment);
+            File file = new File(path);
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(attachment);
+            input.close();
+            out.close();
+            return path;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
     }
 }

@@ -1,19 +1,32 @@
 package com.coungard.client;
 
 import com.coungard.client.desktop.Manager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Launcher extends JTabbedPane {
+    private static final Logger LOGGER = Logger.getLogger(Launcher.class.getName());
 
     public static void main(String[] args) {
         try {
+            DOMConfigurator.configure("log4j.xml");
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
+
+            Map<String, String> config = Settings.getEmailConfig();
+            LOGGER.info("Email configuration: " + config.entrySet()
+                    .stream()
+                    .map(Objects::toString)
+                    .collect(Collectors.joining("\n")));
             SwingUtilities.invokeAndWait(Manager::new);
-        } catch (UnsupportedLookAndFeelException | InterruptedException | InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException | InterruptedException | InvocationTargetException ex) {
+            LOGGER.error(ex.getMessage(), ex);
         }
     }
 }

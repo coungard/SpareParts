@@ -1,15 +1,19 @@
 package com.coungard.client.desktop;
 
 import com.coungard.client.email.ReadEmail;
+import org.apache.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.util.concurrent.TimeUnit;
 
 public class Manager extends JTabbedPane {
+    private static final Logger LOGGER = Logger.getLogger(Manager.class.getName());
     private final JFrame frame;
     private final JPanel mailPanel;
 
     public Manager() {
+        LOGGER.info("Spare Parts desktop starting...");
         frame = new JFrame();
         frame.setTitle("Spare Parts");
         frame.setSize(1000, 680);
@@ -34,8 +38,16 @@ public class Manager extends JTabbedPane {
         saveCSV.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("save CSV pressed");
+                LOGGER.info("save CSV button pressed");
+                long starter = System.currentTimeMillis();
                 new ReadEmail();
+                long millis = System.currentTimeMillis() - starter;
+                String elapsed = String.format("%d min, %d sec",
+                        TimeUnit.MILLISECONDS.toMinutes(millis),
+                        TimeUnit.MILLISECONDS.toSeconds(millis) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+                );
+                LOGGER.debug("Elapsed time: " + elapsed);
             }
         });
     }

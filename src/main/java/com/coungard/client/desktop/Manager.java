@@ -1,54 +1,63 @@
 package com.coungard.client.desktop;
 
-import com.coungard.client.email.ReadEmail;
+import com.coungard.client.util.Utils;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
 public class Manager extends JTabbedPane {
     private static final Logger LOGGER = Logger.getLogger(Manager.class.getName());
     private final JFrame frame;
-    private final JPanel mailPanel;
+    private int width = 1000;
+    private int height = 700;
+    private Font font = new Font(Font.SANS_SERIF, Font.BOLD, 18);
 
     public Manager() {
         LOGGER.info("Spare Parts desktop starting...");
+        setLayout(null);
+        setOpaque(false);
+
         frame = new JFrame();
         frame.setTitle("Spare Parts");
-        frame.setSize(1000, 680);
+        frame.setSize(width, height);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
         frame.getContentPane().setLayout(null);
 
-        mailPanel = new JPanel();
-        mailPanel.setLayout(null);
-        mailPanel.setBounds(0, 0, frame.getSize().width, frame.getSize().height - 85);
-        frame.getContentPane().add(mailPanel);
+        MainPanel mainPanel = new MainPanel();
+        mainPanel.setBounds(0, 0, frame.getSize().width, frame.getSize().height - 85);
+        frame.getContentPane().add(mainPanel);
+
+        addExitButton();
+        setTheme();
+
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
-
-        content();
     }
 
-    private void content() {
-        JButton saveCSV = new JButton("Сохранить CSV файл");
-        saveCSV.setBounds(10, 20, 240, 50);
-        mailPanel.add(saveCSV);
-        saveCSV.addActionListener(new AbstractAction() {
+    private void setTheme() {
+        JLabel themeLabel = new JLabel();
+        themeLabel.setIcon(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("theme.jpg"))));
+        themeLabel.setBounds(0, 0, width, height);
+        frame.getContentPane().add(themeLabel, JLayeredPane.POPUP_LAYER);
+    }
+
+    private void addExitButton() {
+        JButton but = Utils.createButton("Выход", 200, 50, font);
+        but.setLocation(frame.getSize().width - 215, frame.getSize().height - 85);
+        but.setForeground(Color.WHITE);
+        but.setBackground(Color.BLACK);
+        but.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LOGGER.info("save CSV button pressed");
-                long starter = System.currentTimeMillis();
-                new ReadEmail();
-                long millis = System.currentTimeMillis() - starter;
-                String elapsed = String.format("%d min, %d sec",
-                        TimeUnit.MILLISECONDS.toMinutes(millis),
-                        TimeUnit.MILLISECONDS.toSeconds(millis) -
-                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-                );
-                LOGGER.debug("Elapsed time: " + elapsed);
+                LOGGER.info("exit button pressed");
+                System.exit(0);
             }
         });
+
+        frame.getContentPane().add(but);
     }
 }

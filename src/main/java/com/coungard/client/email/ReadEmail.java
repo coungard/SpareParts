@@ -13,6 +13,8 @@ public class ReadEmail {
     private static final Logger LOGGER = Logger.getLogger(ReadEmail.class.getName());
     private static final String ATTACHMENTS_PATH = "attachments/";
 
+    private Message message;
+
     public ReadEmail() {
         Properties properties = new Properties();
         properties.put("mail.debug", "false");
@@ -38,30 +40,40 @@ public class ReadEmail {
             if (inbox.getMessageCount() == 0)
                 return;
             // Последнее сообщение; первое сообщение под номером 1
-            Message message = inbox.getMessage(inbox.getMessageCount());
-            saveAttachments(message);
+            message = inbox.getMessage(inbox.getMessageCount());
         } catch (Exception ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
     }
 
-    private void saveAttachments(Message message) throws Exception {
-        if (message.getContent() instanceof Multipart) {
-            Multipart multipart = (Multipart) message.getContent();
+    public String saveAttachment(Message message) {
+        try {
+            if (message.getContent() instanceof Multipart) {
+                Multipart multipart = (Multipart) message.getContent();
 
-            for (int i = 0; i < multipart.getCount(); i++) {
-                Part part = multipart.getBodyPart(i);
-                String disposition = part.getDisposition();
+                for (int i = 0; i < multipart.getCount(); i++) {
+                    Part part = multipart.getBodyPart(i);
+                    String disposition = part.getDisposition();
 
-                if ((disposition != null) && ((disposition.equalsIgnoreCase(Part.ATTACHMENT) ||
-                        (disposition.equalsIgnoreCase(Part.INLINE))))) {
-                    MimeBodyPart mimeBodyPart = (MimeBodyPart) part;
-                    String fileName = mimeBodyPart.getFileName();
+                    if ((disposition != null) && ((disposition.equalsIgnoreCase(Part.ATTACHMENT) ||
+                            (disposition.equalsIgnoreCase(Part.INLINE))))) {
+                        MimeBodyPart mimeBodyPart = (MimeBodyPart) part;
+                        String fileName = mimeBodyPart.getFileName();
 
-                    File fileToSave = new File(ATTACHMENTS_PATH + fileName);
-                    mimeBodyPart.saveFile(fileToSave);
+                        File fileToSave = new File(ATTACHMENTS_PATH + fileName);
+                        mimeBodyPart.saveFile(fileToSave);
+                        LOGGER.debug("Saved file : " + fileToSave.getPath());
+                        return fileToSave.getPath();
+                    }
                 }
             }
+        } catch (IOException | MessagingException ex) {
+            LOGGER.error(ex.getMessage(), ex);
         }
+        return null;
+    }
+
+    public Message getMessage() {
+        return message;
     }
 }

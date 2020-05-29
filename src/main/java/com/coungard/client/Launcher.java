@@ -19,6 +19,7 @@ public class Launcher extends JTabbedPane {
             DOMConfigurator.configure("log4j.xml");
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
 
+            LOGGER.info("Start application");
             Map<String, String> config = Settings.getEmailConfig();
             LOGGER.info("Email configuration: " + config.entrySet()
                     .stream()

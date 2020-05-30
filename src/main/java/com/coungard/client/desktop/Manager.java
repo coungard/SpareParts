@@ -21,7 +21,7 @@ public class Manager extends JTabbedPane {
         setOpaque(false);
 
         frame = new JFrame();
-        frame.setTitle("Spare Parts");
+        frame.setTitle("Дешевые Запчасти");
         frame.setSize(width, height);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -53,7 +53,7 @@ public class Manager extends JTabbedPane {
         but.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LOGGER.info("exit button pressed");
+                LOGGER.info("exit");
                 System.exit(0);
             }
         });

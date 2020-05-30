@@ -9,6 +9,8 @@ public class Settings {
     public static final String IMAP_AUTH_EMAIL = "sfetodagi@mail.ru";
     public static final String IMAP_AUTH_PWD = "art112358";
 
+    public static final String dbDir = "./db";
+
     public static Map<String, String> getEmailConfig() {
         Map<String, String> map = new HashMap<>();
         map.put("server", IMAP_Server);

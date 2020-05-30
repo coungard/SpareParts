@@ -29,8 +29,17 @@ public class EmailTab extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 LOGGER.info("save CSV button pressed");
                 long starter = System.currentTimeMillis();
-                ReadEmail readEmail = new ReadEmail();
-                readEmail.saveAttachment(readEmail.getMessage());
+                ReadEmail email = new ReadEmail();
+                if (!email.connection()) {
+                    JOptionPane.showMessageDialog(null, "Connection error!", "", JOptionPane.ERROR_MESSAGE);
+                    return;
+                };
+                email.checkMessage();
+                if (email.getMessage() == null) {
+                    JOptionPane.showMessageDialog(null, "Error trying to find message!", "", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                email.saveAttachment(email.getMessage());
                 long millis = System.currentTimeMillis() - starter;
                 String elapsed = String.format("%d min, %d sec",
                         TimeUnit.MILLISECONDS.toMinutes(millis),

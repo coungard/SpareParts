@@ -12,27 +12,40 @@ import java.util.Properties;
 public class ReadEmail {
     private static final Logger LOGGER = Logger.getLogger(ReadEmail.class.getName());
     private static final String ATTACHMENTS_PATH = "attachments/";
+    private final Properties properties;
 
     private Message message;
+    private Store store;
 
     public ReadEmail() {
-        Properties properties = new Properties();
+        properties = new Properties();
         properties.put("mail.debug", "false");
         properties.put("mail.store.protocol", "imaps");
         properties.put("mail.imap.ssl.enable", "true");
         properties.put("mail.imap.port", Settings.IMAP_Port);
         properties.put("mail.imaps.partialfetch", "false");
+    }
 
-        Authenticator auth = new EmailAuthenticator(Settings.IMAP_AUTH_EMAIL,
-                Settings.IMAP_AUTH_PWD);
+    public boolean connection() {
+        Authenticator auth = new EmailAuthenticator(Settings.IMAP_AUTH_EMAIL, Settings.IMAP_AUTH_PWD);
         Session session = Session.getDefaultInstance(properties, auth);
         session.setDebug(false);
         try {
-            Store store = session.getStore();
             // Подключение к почтовому серверу
+            store = session.getStore();
             store.connect(Settings.IMAP_Server, Settings.IMAP_AUTH_EMAIL, Settings.IMAP_AUTH_PWD);
-            // Папка входящих сообщений
-            Folder inbox = store.getFolder("INBOX");
+        } catch (MessagingException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            return false;
+        }
+        return true;
+    }
+
+    public void checkMessage() {
+        // Папка входящих сообщений
+        Folder inbox;
+        try {
+            inbox = store.getFolder("INBOX");
             // Открываем папку в режиме только для чтения
             inbox.open(Folder.READ_ONLY);
 
@@ -41,7 +54,7 @@ public class ReadEmail {
                 return;
             // Последнее сообщение; первое сообщение под номером 1
             message = inbox.getMessage(inbox.getMessageCount());
-        } catch (Exception ex) {
+        } catch (MessagingException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
     }

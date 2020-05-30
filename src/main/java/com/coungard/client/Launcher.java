@@ -25,6 +25,7 @@ public class Launcher extends JTabbedPane {
                     .stream()
                     .map(Objects::toString)
                     .collect(Collectors.joining("\n")));
+            DBManager.createDB();
             SwingUtilities.invokeAndWait(Manager::new);
         } catch (UnsupportedLookAndFeelException | InterruptedException | InvocationTargetException ex) {
             LOGGER.error(ex.getMessage(), ex);

@@ -12,7 +12,7 @@ public class MainPanel extends JTabbedPane {
         EmailTab emailTab = new EmailTab();
         PriceListTab priceListTab = new PriceListTab();
         SettingsTab settingsTab = new SettingsTab();
-        addTab("Почта", emailTab);
+        addTab("Почтовый сервис", emailTab);
         addTab("Прайс лист", priceListTab);
         addTab("Настройки", settingsTab);
     }

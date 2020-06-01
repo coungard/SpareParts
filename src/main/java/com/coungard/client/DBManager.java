@@ -1,12 +1,11 @@
 package com.coungard.client;
 
 import com.coungard.client.entity.AutoPart;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.*;
 
 public class DBManager {
@@ -188,6 +187,15 @@ public class DBManager {
             } catch (Exception ex) {
                 LOGGER.error(ex.getMessage(), ex);
             }
+        }
+    }
+
+    public static void deleteDB() {
+        try {
+            // Unable to delete file: .\db\seg0\cf0.dat Derby data shit
+            FileUtils.deleteDirectory(new File("./db"));
+        } catch (IOException ex) {
+            LOGGER.error(ex.getMessage(), ex);
         }
     }
 }

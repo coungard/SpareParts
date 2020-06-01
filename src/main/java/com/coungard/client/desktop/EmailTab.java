@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.util.concurrent.TimeUnit;
 
 public class EmailTab extends JPanel {
     private static final Logger LOGGER = Logger.getLogger(EmailTab.class.getName());
@@ -49,7 +48,7 @@ public class EmailTab extends JPanel {
     }
 
     private void downloadFile() {
-        long starter = System.currentTimeMillis();
+        long started = System.currentTimeMillis();
         ReadEmail email = new ReadEmail();
         if (!email.connection()) {
             JOptionPane.showMessageDialog(null, "Connection error!", "", JOptionPane.ERROR_MESSAGE);
@@ -61,12 +60,7 @@ public class EmailTab extends JPanel {
             return;
         }
         email.saveAttachment(email.getMessage());
-        long millis = System.currentTimeMillis() - starter;
-        String elapsed = String.format("%d min, %d sec",
-                TimeUnit.MILLISECONDS.toMinutes(millis),
-                TimeUnit.MILLISECONDS.toSeconds(millis) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-        );
+        String elapsed = Utils.calcElapsedTime(started);
         LOGGER.debug("Elapsed time: " + elapsed);
     }
 }

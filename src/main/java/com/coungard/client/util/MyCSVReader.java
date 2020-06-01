@@ -18,6 +18,8 @@ public class MyCSVReader extends CSVReader {
     }
 
     public Map<Integer, String[]> getRows() {
+        LOGGER.info("Reading lines from file...");
+        long started = System.currentTimeMillis();
         lineNumber = 0;
         Map<Integer, String[]> rows = new LinkedHashMap<>();
         try {
@@ -28,6 +30,8 @@ public class MyCSVReader extends CSVReader {
                 lineNumber++;
             }
             LOGGER.debug("Total rows = " + lineNumber);
+            String elapsed = Utils.calcElapsedTime(started);
+            LOGGER.debug("Elapsed time: " + elapsed);
             return rows;
         } catch (IOException ex) {
             LOGGER.error(ex.getMessage(), ex);
@@ -55,13 +59,13 @@ public class MyCSVReader extends CSVReader {
     protected String getNextLine() throws IOException {
         String line = super.getNextLine();
         if (line != null && line.contains(badSequence)) {
-            debugLine(line);
+            line = debugLine(line);
         }
         return line;
     }
 
-    private void debugLine(String line) {
-        String[] parts = line.split(String.valueOf(this.getParser().getSeparator()));
+    private String debugLine(String line) {
+        String[] parts = line.split(";");
         for (String s : parts) {
             int quotesCount = 0;
             if (s.contains(badSequence)) {
@@ -75,5 +79,6 @@ public class MyCSVReader extends CSVReader {
                 }
             }
         }
+        return line;
     }
 }

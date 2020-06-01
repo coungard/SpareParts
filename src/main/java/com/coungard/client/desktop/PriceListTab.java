@@ -60,7 +60,7 @@ public class PriceListTab extends JPanel {
         loadData.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // todo DBManager.deleteDB();
+                // todo... DBManager.deleteDB();
                 loadTable();
             }
         });
@@ -82,11 +82,7 @@ public class PriceListTab extends JPanel {
         }
 
         List<String[]> rowList = getStructure(csvData);
-        for (int i = 0; i < rowList.size(); i++) {
-            AutoPart autoPart = fetchAutoPart(rowList.get(i), i);
-            DBManager.saveAutoPart(autoPart);
-        }
-        LOGGER.info("Price list loaded");
+        addPriceItemsToDB(rowList);
 
         String[][] data = new String[rowList.size()][];
         int count = 0;
@@ -118,6 +114,18 @@ public class PriceListTab extends JPanel {
             });
         }
         repaint();
+    }
+
+    private void addPriceItemsToDB(List<String[]> rowList) {
+        LOGGER.info("Loading PriceItems to DataBase...");
+        long started = System.currentTimeMillis();
+        for (int i = 0; i < rowList.size(); i++) {
+            AutoPart autoPart = fetchAutoPart(rowList.get(i), i);
+            DBManager.saveAutoPart(autoPart);
+        }
+        LOGGER.info("Price list loaded");
+        String elapsed = Utils.calcElapsedTime(started);
+        LOGGER.debug("Elapsed time: " + elapsed);
     }
 
     private AutoPart fetchAutoPart(String[] part, int order) {

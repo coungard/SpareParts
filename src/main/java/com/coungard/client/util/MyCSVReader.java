@@ -3,16 +3,15 @@ package com.coungard.client.util;
 import com.opencsv.CSVReader;
 import org.apache.log4j.Logger;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MyCSVReader extends CSVReader {
     private static final Logger LOGGER = Logger.getLogger(MyCSVReader.class.getName());
     private static final char QUOTE = '"';
     private static int lineNumber;
+    private String badSequence = "\"\"\"\"";
 
     public MyCSVReader(Reader reader, char separator) {
         super(reader, separator);
@@ -24,7 +23,8 @@ public class MyCSVReader extends CSVReader {
         try {
             String[] line;
             while ((line = readNext()) != null) {
-                rows.put(lineNumber, line);
+                String[] withDelimeter = splitWithDelimeter(line, ",");
+                rows.put(lineNumber, withDelimeter);
                 lineNumber++;
             }
             LOGGER.debug("Total rows = " + lineNumber);
@@ -33,6 +33,16 @@ public class MyCSVReader extends CSVReader {
             LOGGER.error(ex.getMessage(), ex);
         }
         return null;
+    }
+
+    private String[] splitWithDelimeter(String[] line, String delimeter) {
+        List<String> list = new ArrayList<>();
+        for (String s : line) {
+            String[] parts = s.split(delimeter);
+            list.addAll(Arrays.asList(parts));
+        }
+        String[] result = new String[list.size()];
+        return list.toArray(result);
     }
 
     /**
@@ -44,32 +54,26 @@ public class MyCSVReader extends CSVReader {
     @Override
     protected String getNextLine() throws IOException {
         String line = super.getNextLine();
-        String sequence = "\"\"\"\"";
-        if (line != null && line.contains(sequence)) {
-            String[] parts = line.split(";");
-            for (String s : parts) {
-                int quotesCount = 0;
-                if (s.contains(sequence)) {
-                    char[] array = s.toCharArray();
-                    for (int i = 0; i < s.length(); i++) {
-                        if (array[i] == QUOTE) quotesCount++;
-                    }
-                    if (quotesCount % 2 != 0) {
-                        LOGGER.warn("Quotes on line " + lineNumber + " is broken! Deleting 1 quote!");
-                        line = line.replaceAll(sequence, "\"\"\"");
-                    }
-                }
-            }
+        if (line != null && line.contains(badSequence)) {
+            debugLine(line);
         }
         return line;
     }
-}
 
-/**
- * Нужные колонки из файла:
- * - "Бренд" загрузить в Vendor
- * - "Каталожный номер" загрузить в Number
- * - "Описание" загрузить в Description
- * - "Цена" в Price
- * - "Наличие" в Count
- */
+    private void debugLine(String line) {
+        String[] parts = line.split(String.valueOf(this.getParser().getSeparator()));
+        for (String s : parts) {
+            int quotesCount = 0;
+            if (s.contains(badSequence)) {
+                char[] array = s.toCharArray();
+                for (int i = 0; i < s.length(); i++) {
+                    if (array[i] == QUOTE) quotesCount++;
+                }
+                if (quotesCount % 2 != 0) {
+                    LOGGER.warn("Quotes on line " + lineNumber + " is broken! Deleting 1 quote!");
+                    line = line.replaceAll(badSequence, "\"\"\"");
+                }
+            }
+        }
+    }
+}

@@ -1,7 +1,12 @@
 package com.coungard.client;
 
+import com.coungard.client.entity.AutoPart;
 import org.apache.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 
 public class DBManager {
@@ -32,7 +37,8 @@ public class DBManager {
             try {
                 Statement st = conn.createStatement();
                 st.setMaxRows(1);
-                st.executeQuery("SELECT ID, \"Vendor\", \"Number\", \"Description\", \"Price\", \"Count\" FROM APP.PriceItems");
+                st.executeQuery("SELECT ID, \"Vendor\", \"Number\", \"SearchVendor\"," +
+                        "\"SearchNumber\", \"Description\", \"Price\", \"Count\" FROM APP.PriceItems");
             } catch (Exception ex) {
                 LOGGER.warn(ex.getMessage());
                 try {
@@ -43,6 +49,8 @@ public class DBManager {
                         + " ID BIGINT NOT NULL,"
                         + " \"Vendor\" VARCHAR(64),"
                         + " \"Number\" VARCHAR(64),"
+                        + " \"SearchVendor\" VARCHAR(64),"
+                        + " \"SearchNumber\" VARCHAR(64),"
                         + " \"Description\" VARCHAR(512),"
                         + " \"Price\" DECIMAL(18,2) NOT NULL,"
                         + " \"Count\" INTEGER NOT NULL,"
@@ -82,6 +90,37 @@ public class DBManager {
         LOGGER.info("createDB end");
     }
 
+    synchronized public static void saveAutoPart(AutoPart autoPart) {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            if (autoPart != null) {
+                String sqlQuery = "INSERT INTO APP.PRICEITEMS (ID, \"Vendor\", \"Number\", \"SearchVendor\", " +
+                        "\"SearchNumber\", \"Description\", \"Price\", \"Count\") Values (?,?,?,?,?,?,?,?)";
+                PreparedStatement ps = conn.prepareStatement(sqlQuery);
+                ps.setLong(1, autoPart.getId());
+                ps.setString(2, autoPart.getVendor());
+                ps.setString(3, autoPart.getNumber());
+                ps.setString(4, autoPart.getVendorSearch());
+                ps.setString(5, autoPart.getNumberSearch());
+                ps.setString(6, autoPart.getDescription());
+                ps.setBigDecimal(7, autoPart.getPrice());
+                ps.setInt(8, autoPart.getCount());
+
+                ps.execute();
+            }
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                if (conn != null) conn.close();
+            } catch (Exception ex) {
+                LOGGER.error(ex.getMessage(), ex);
+            }
+        }
+    }
+
     /**
      * Обновить параметр name на val. Если параметр ранее не существует он создастся
      *
@@ -94,15 +133,15 @@ public class DBManager {
         try {
             conn = getConnection();
             if (val != null) {
-                PreparedStatement pt = conn.prepareStatement("UPDATE APP.PRMS SET VAL=? WHERE NAME=?");
-                pt.setString(1, val);
-                pt.setString(2, name);
-                if (pt.executeUpdate() == 0) {
-                    pt.close();
-                    pt = conn.prepareStatement("INSERT INTO APP.PRMS VALUES(?, ?)");
-                    pt.setString(1, name);
-                    pt.setString(2, val);
-                    pt.executeUpdate();
+                PreparedStatement ps = conn.prepareStatement("UPDATE APP.PRMS SET VAL=? WHERE NAME=?");
+                ps.setString(1, val);
+                ps.setString(2, name);
+                if (ps.executeUpdate() == 0) {
+                    ps.close();
+                    ps = conn.prepareStatement("INSERT INTO APP.PRMS VALUES(?, ?)");
+                    ps.setString(1, name);
+                    ps.setString(2, val);
+                    ps.executeUpdate();
                 }
             } else {
                 PreparedStatement pt = conn.prepareStatement("DELETE FROM APP.PRMS WHERE NAME=?");

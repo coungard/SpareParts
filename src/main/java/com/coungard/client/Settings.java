@@ -11,6 +11,12 @@ public class Settings {
 
     public static final String dbDir = "./db";
 
+    public static final String VENDOR_COLUMN_NAME = "Бренд";
+    public static final String NUMBER_COLUMN_NAME = "Каталожный номер";
+    public static final String DESCRIPTION_COLUMN_NAME = "Описание";
+    public static final String PRICE_COLUMN_NAME = "Цена";
+    public static final String COUNT_COLUMN_NAME = "Наличие";
+
     public static Map<String, String> getEmailConfig() {
         Map<String, String> map = new HashMap<>();
         map.put("server", IMAP_Server);

@@ -14,8 +14,25 @@ public class MyCSVReader extends CSVReader {
     private static final char QUOTE = '"';
     private static int lineNumber;
 
-    public MyCSVReader(Reader reader) {
-        super(reader);
+    public MyCSVReader(Reader reader, char separator) {
+        super(reader, separator);
+    }
+
+    public Map<Integer, String[]> getRows() {
+        lineNumber = 0;
+        Map<Integer, String[]> rows = new LinkedHashMap<>();
+        try {
+            String[] line;
+            while ((line = readNext()) != null) {
+                rows.put(lineNumber, line);
+                lineNumber++;
+            }
+            LOGGER.debug("Total rows = " + lineNumber);
+            return rows;
+        } catch (IOException ex) {
+            LOGGER.error(ex.getMessage(), ex);
+        }
+        return null;
     }
 
     /**
@@ -45,27 +62,6 @@ public class MyCSVReader extends CSVReader {
             }
         }
         return line;
-    }
-
-    public static Map<Integer, String[]> getRows() {
-        String csvFile = "attachments/10953.csv";
-        lineNumber = 0;
-
-        MyCSVReader reader;
-        Map<Integer, String[]> rows = new LinkedHashMap<>();
-        try {
-            reader = new MyCSVReader(new FileReader(csvFile));
-            String[] line;
-            while ((line = reader.readNext()) != null) {
-                lineNumber++;
-                rows.put(lineNumber, line);
-            }
-            LOGGER.debug("Строк всего = " + lineNumber);
-            return rows;
-        } catch (IOException ex) {
-            LOGGER.error(ex.getMessage(), ex);
-        }
-        return null;
     }
 }
 

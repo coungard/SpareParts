@@ -40,7 +40,7 @@ public class Manager extends JTabbedPane {
 
     private void setTheme() {
         JLabel themeLabel = new JLabel();
-        themeLabel.setIcon(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("theme.jpg"))));
+        themeLabel.setIcon(new ImageIcon(Objects.requireNonNull(this.getClass().getClassLoader().getResource("images/theme.jpg"))));
         themeLabel.setBounds(0, 0, width, height);
         frame.getContentPane().add(themeLabel, JLayeredPane.POPUP_LAYER);
     }

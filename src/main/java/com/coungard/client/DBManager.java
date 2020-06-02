@@ -190,6 +190,27 @@ public class DBManager {
         }
     }
 
+    synchronized public static void deleteAllPriceItems() {
+        LOGGER.info("Deleting all Price Items...");
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            String sqlQuery = "DELETE FROM APP.PRICEITEMS";
+            Statement statemet = conn.createStatement();
+            statemet.executeUpdate(sqlQuery);
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new RuntimeException(ex);
+        } finally {
+            try {
+                if (conn != null) conn.close();
+            } catch (Exception ex) {
+                LOGGER.error(ex.getMessage(), ex);
+            }
+        }
+    }
+
+
     public static void deleteDB() {
         try {
             // Unable to delete file: .\db\seg0\cf0.dat Derby data shit

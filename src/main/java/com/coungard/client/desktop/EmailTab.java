@@ -30,17 +30,6 @@ public class EmailTab extends JPanel {
                 downloadFile();
             }
         });
-
-        JButton loadCSV = Utils.createButton("Загрузить CSV файл", 240, 50, font);
-        loadCSV.setLocation(10, 100);
-        add(loadCSV);
-        loadCSV.addActionListener(new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                LOGGER.info("load CSV button pressed");
-                loadCSV();
-            }
-        });
     }
 
     private void loadCSV() {
@@ -59,7 +48,8 @@ public class EmailTab extends JPanel {
             JOptionPane.showMessageDialog(null, "Error trying to find message!", "", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        email.saveAttachment(email.getMessage());
+        String savedFile = email.saveAttachment(email.getMessage());
+        JOptionPane.showMessageDialog(null,"Файл " + savedFile + " сохранен!");
         String elapsed = Utils.calcElapsedTime(started);
         LOGGER.info("Attachment downloaded! Elapsed time: " + elapsed);
     }

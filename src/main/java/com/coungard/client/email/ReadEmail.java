@@ -26,13 +26,13 @@ public class ReadEmail {
     }
 
     public boolean connection() {
-        Authenticator auth = new EmailAuthenticator(Settings.IMAP_AUTH_EMAIL, Settings.IMAP_AUTH_PWD);
+        Authenticator auth = new EmailAuthenticator(Settings.IMAP_AUTH_EMAIL, Settings.IMAP_AUTH_PASSWORD);
         Session session = Session.getDefaultInstance(properties, auth);
         session.setDebug(false);
         try {
             // Подключение к почтовому серверу
             store = session.getStore();
-            store.connect(Settings.IMAP_Server, Settings.IMAP_AUTH_EMAIL, Settings.IMAP_AUTH_PWD);
+            store.connect(Settings.IMAP_Server, Settings.IMAP_AUTH_EMAIL, Settings.IMAP_AUTH_PASSWORD);
         } catch (MessagingException ex) {
             LOGGER.error(ex.getMessage(), ex);
             return false;
@@ -72,7 +72,7 @@ public class ReadEmail {
                         MimeBodyPart mimeBodyPart = (MimeBodyPart) part;
                         String fileName = mimeBodyPart.getFileName();
 
-                        File fileToSave = new File(Settings.ATTACHMENTS_PATH + fileName);
+                        File fileToSave = new File(Settings.EMAIL_ATTACHMENTS_PATH + fileName);
                         mimeBodyPart.saveFile(fileToSave);
                         LOGGER.info("Saved file : " + fileToSave.getPath());
                         return fileToSave.getPath();

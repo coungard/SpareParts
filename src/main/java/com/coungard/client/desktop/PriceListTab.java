@@ -52,6 +52,7 @@ public class PriceListTab extends JPanel {
             }
         };
         table.setModel(model);
+        table.setOpaque(false);
         colModel = table.getColumnModel();
 
         JButton loadData = Utils.createButton("Загрузить данные", 220, 40, font);
@@ -61,6 +62,7 @@ public class PriceListTab extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // todo... DBManager.deleteDB();
+                DBManager.deleteAllPriceItems();
                 loadTable();
             }
         });
@@ -69,7 +71,7 @@ public class PriceListTab extends JPanel {
     private void loadTable() {
         Map<Integer, String[]> csvData;
         try {
-            FileReader fileReader = new FileReader("smtp/attachments/10953.csv");
+            FileReader fileReader = new FileReader("email/attachments/10953.csv");
             MyCSVReader csvReader = new MyCSVReader(fileReader, ';');
             csvData = csvReader.getRows();
             if (csvData == null) {
@@ -95,6 +97,7 @@ public class PriceListTab extends JPanel {
         };
 
         table.setModel(model);
+        table.setOpaque(false);
         colModel.getColumn(0).setMinWidth(70);
         colModel.getColumn(1).setMinWidth(180);
         colModel.getColumn(2).setMinWidth(180);
@@ -109,6 +112,7 @@ public class PriceListTab extends JPanel {
                     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
                     String tip = (String) table.getModel().getValueAt(row, column);
                     setToolTipText("<html><h3>" + tip);
+                    super.setOpaque(false);
                     return this;
                 }
             });

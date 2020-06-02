@@ -7,6 +7,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Objects;
@@ -22,6 +23,7 @@ public class Launcher extends JTabbedPane {
 
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
             Utils.createDirectories();
+            Utils.loadProp(Settings.EMAIL_PROPERTIES_PATH);
             Map<String, String> config = Settings.getEmailConfig();
             LOGGER.info("Email configuration: " + config.entrySet()
                     .stream()
@@ -29,7 +31,7 @@ public class Launcher extends JTabbedPane {
                     .collect(Collectors.joining("\n")));
             DBManager.createDB();
             SwingUtilities.invokeAndWait(Manager::new);
-        } catch (UnsupportedLookAndFeelException | InterruptedException | InvocationTargetException ex) {
+        } catch (UnsupportedLookAndFeelException | InterruptedException | InvocationTargetException | IOException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
     }

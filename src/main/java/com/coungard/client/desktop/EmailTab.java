@@ -61,6 +61,6 @@ public class EmailTab extends JPanel {
         }
         email.saveAttachment(email.getMessage());
         String elapsed = Utils.calcElapsedTime(started);
-        LOGGER.info("Elapsed time: " + elapsed);
+        LOGGER.info("Attachment downloaded! Elapsed time: " + elapsed);
     }
 }

@@ -24,10 +24,12 @@ public class Utils {
 
     public static String calcElapsedTime(long started) {
         long millis = System.currentTimeMillis() - started;
-        return String.format("%d min, %d sec",
+        return String.format("%d min, %d sec, %d ms",
                 TimeUnit.MILLISECONDS.toMinutes(millis),
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)),
+                TimeUnit.MILLISECONDS.toMillis(millis) -
+                        TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(millis))
         );
     }
 
@@ -40,5 +42,20 @@ public class Utils {
         } catch (IOException ex) {
             LOGGER.error(ex.getMessage(), ex);
         }
+    }
+
+    public static String getClearedAsciiString(String text) {
+        String result = text.toUpperCase();
+        char[] symbols = result.toCharArray();
+
+        for (int i = 0; i < symbols.length; i++) {
+            int c = symbols[i];
+            if ((c < 48 || c > 57) && (c < 65 || c > 90)) {
+                symbols[i] = '!';
+            }
+        }
+        String temp = String.valueOf(symbols);
+        result = temp.replaceAll("!", "");
+        return result;
     }
 }

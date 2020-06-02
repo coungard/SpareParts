@@ -123,9 +123,8 @@ public class PriceListTab extends JPanel {
             AutoPart autoPart = fetchAutoPart(rowList.get(i), i);
             DBManager.saveAutoPart(autoPart);
         }
-        LOGGER.info("Price list loaded");
         String elapsed = Utils.calcElapsedTime(started);
-        LOGGER.info("Elapsed time: " + elapsed);
+        LOGGER.info("Price list loaded. Elapsed time: " + elapsed);
     }
 
     private AutoPart fetchAutoPart(String[] part, int order) {
@@ -141,8 +140,9 @@ public class PriceListTab extends JPanel {
         }
         String vendor = part[1];
         String number = part[2];
-        String vendorSearch = vendor.toUpperCase();
-        String numberSearch = number.toUpperCase();
+        String vendorSearch = Utils.getClearedAsciiString(vendor);
+        String numberSearch = Utils.getClearedAsciiString(number);
+
         String description = part[3];
         BigDecimal price;
         try {

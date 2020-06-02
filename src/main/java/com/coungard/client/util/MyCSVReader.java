@@ -29,9 +29,9 @@ public class MyCSVReader extends CSVReader {
                 rows.put(lineNumber, withDelimeter);
                 lineNumber++;
             }
-            LOGGER.debug("Total rows = " + lineNumber);
+            LOGGER.info("Total rows = " + lineNumber);
             String elapsed = Utils.calcElapsedTime(started);
-            LOGGER.debug("Elapsed time: " + elapsed);
+            LOGGER.info("Elapsed time: " + elapsed);
             return rows;
         } catch (IOException ex) {
             LOGGER.error(ex.getMessage(), ex);

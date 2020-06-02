@@ -69,7 +69,7 @@ public class PriceListTab extends JPanel {
     private void loadTable() {
         Map<Integer, String[]> csvData;
         try {
-            FileReader fileReader = new FileReader("attachments/10953.csv");
+            FileReader fileReader = new FileReader("smtp/attachments/10953.csv");
             MyCSVReader csvReader = new MyCSVReader(fileReader, ';');
             csvData = csvReader.getRows();
             if (csvData == null) {
@@ -125,7 +125,7 @@ public class PriceListTab extends JPanel {
         }
         LOGGER.info("Price list loaded");
         String elapsed = Utils.calcElapsedTime(started);
-        LOGGER.debug("Elapsed time: " + elapsed);
+        LOGGER.info("Elapsed time: " + elapsed);
     }
 
     private AutoPart fetchAutoPart(String[] part, int order) {

@@ -9,6 +9,8 @@ public class Settings {
     public static final String IMAP_AUTH_EMAIL = "sfetodagi@mail.ru";
     public static final String IMAP_AUTH_PWD = "art112358";
 
+    public static final String ATTACHMENTS_PATH = "smtp/attachments/";
+    public static final String SMTP_PATH = "smtp/";
     public static final String dbDir = "./db";
 
     public static final String VENDOR_COLUMN_NAME = "Бренд";

@@ -5,4 +5,4 @@
 /smtp
 /log
 /db
-/attachments/*
+/smtp/attachments/*

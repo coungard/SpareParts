@@ -11,7 +11,6 @@ import java.util.Properties;
 
 public class ReadEmail {
     private static final Logger LOGGER = Logger.getLogger(ReadEmail.class.getName());
-    private static final String ATTACHMENTS_PATH = "attachments/";
     private final Properties properties;
 
     private Message message;
@@ -73,9 +72,9 @@ public class ReadEmail {
                         MimeBodyPart mimeBodyPart = (MimeBodyPart) part;
                         String fileName = mimeBodyPart.getFileName();
 
-                        File fileToSave = new File(ATTACHMENTS_PATH + fileName);
+                        File fileToSave = new File(Settings.ATTACHMENTS_PATH + fileName);
                         mimeBodyPart.saveFile(fileToSave);
-                        LOGGER.debug("Saved file : " + fileToSave.getPath());
+                        LOGGER.info("Saved file : " + fileToSave.getPath());
                         return fileToSave.getPath();
                     }
                 }

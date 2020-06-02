@@ -1,6 +1,7 @@
 package com.coungard.client;
 
 import com.coungard.client.desktop.Manager;
+import com.coungard.client.util.Utils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.xml.DOMConfigurator;
 
@@ -17,9 +18,10 @@ public class Launcher extends JTabbedPane {
     public static void main(String[] args) {
         try {
             DOMConfigurator.configure("log4j.xml");
-            UIManager.setLookAndFeel(new NimbusLookAndFeel());
-
             LOGGER.info("Start application");
+
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+            Utils.createDirectories();
             Map<String, String> config = Settings.getEmailConfig();
             LOGGER.info("Email configuration: " + config.entrySet()
                     .stream()

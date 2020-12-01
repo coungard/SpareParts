@@ -19,8 +19,8 @@ public class Settings {
     // Дефолтные настройки почты
     public static String IMAP_Server = "imap.mail.ru";
     public static String IMAP_Port = "993";
-    public static String IMAP_AUTH_EMAIL = "sfetodagi@mail.ru";
-    public static String IMAP_AUTH_PASSWORD = "art11235813";
+    public static String IMAP_AUTH_EMAIL = "example@mail.ru";
+    public static String IMAP_AUTH_PASSWORD = "qwerty";
 
     public static Map<String, String> getEmailConfig() {
         Map<String, String> map = new HashMap<>();
